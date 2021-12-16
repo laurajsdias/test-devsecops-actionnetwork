@@ -45,12 +45,12 @@ Wait the script end to copy the Arn parameter below.
 
 1. ``cd project``
 2. ``./launch-vpc-stack.sh``
-3. ``wait for it to end``
+3. ``wait for it to end (status of the launching process can be seen on Cloudformation service)``
 
 ## Launching the WEB-SERVERS-STACK
 
 1. ``./launch-web-servers.sh``
-2. ``wait for it to end``
+2. ``wait for it to end (status of the launching process can be seen on Cloudformation service)``
 3. ``test by accessing the LoadBalancer on EC2 service. There will be a DNS address``
 
 ### 🔽 Explanations   
@@ -82,34 +82,33 @@ Furthermore, there are the **Listeners** configuration. There are two: one for H
 DELIVERED:
 - Code to provision almost automatically 3 web servers on AWS via an auto scaling group working behind a load balancer.  
 - A basic HTML page file uploaded to S3 that also gives names to the instances to test the load balancer working.  
-- Encrypted access to the website via the load balancer (using self-signed certificate)  
+- Encrypted access to the website via the load balancer (using self-signed certificate as an example)  
 - A UserData script encoded on the LaunchTemplate that installs yum-cron and uses a customized yum-cron.conf file (uploaded to S3) that schedules security and package updates every 24h.  
 - Scripts to create bucket, upload necessary files to S3, generate certificate and do the lauching of the Cloudformation stacks.  
 
 NOT DELIVERED:  
-- Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked.  
+- Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked (the command used on the servers was "stress -c 8").  
 - Method to automatically update or replace servers upon updates and test them to check if everything is ok before going in 'production'. 
 
 IDEAS TO MAKE MORE PRODUCTION-READY:
 - Remove hardcoded stuff like AccountID, credentials and create secrets.
-- Improve the process so it has minimal manual steps. For example:
- . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, but I'm missing some detail and it's not working). 
- . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.
+- Improve the process so it has minimal manual steps. For example:  
+ . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, but I'm missing some detail and it's not working).   
+ . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.  
 
- >>> Address to the one I launched: https://
+ >>> **Address to the one I launched: https://**
 
 ### 🔽 Refs
 
-Auto-scaling groups and Elastic Load Balancing AWS Basics for Beginners - Full Course - YouTube
-Scale policy amazon ec2 - How to add a scaling policy to an auto scaling group using Cloud Formation or AWS CLI - Stack Overflow
-yum-cron Scheduling updates in Linux using yum-cron | Enable Sysadmin (redhat.com)
-VPC and subnets creation Enterprise Level AWS Infrastructure – Architecture Scaffolding – Grape Up
+**Auto-scaling groups and Elastic Load Balancing** AWS Basics for Beginners - Full Course - YouTube
+**Scale policy amazon ec2** - How to add a scaling policy to an auto scaling group using Cloud Formation or AWS CLI - Stack Overflow
+**yum-cron** Scheduling updates in Linux using yum-cron | Enable Sysadmin (redhat.com)
+**VPC and subnets creation** Enterprise Level AWS Infrastructure – Architecture Scaffolding – Grape Up
 AWS - Creating VPC with CloudFormation - 2020 (bogotobogo.com)
 Cloudformation template for setting up VPC and subnets for Fargate (github.com)
-UserData to make configurations during launch amazon web services - Configure ECS Cluster Instance Configuration using YAML file - Stack Overflow
-Cloudformation examp
-le Cloud Infrastructure as Code – AWS Cloud Formation – Grape Up
-Http to https redirect amazon web services - HTTP to HTTPS redirect in CloudFormation template for ECS Fargate - Stack Overflow
-Generate self-signing certificate Create AWS ELB with Self-Signed SSL Cert | by Francis Yeo | Medium
+**UserData to make configurations during launch amazon web services** - Configure ECS Cluster Instance Configuration using YAML file - Stack Overflow
+**Cloudformation example** Cloud Infrastructure as Code – AWS Cloud Formation – Grape Up
+**Http to https redirect amazon web services** - HTTP to HTTPS redirect in CloudFormation template for ECS Fargate - Stack Overflow
+**Generate self-signing certificate** Create AWS ELB with Self-Signed SSL Cert | by Francis Yeo | Medium
 
 
