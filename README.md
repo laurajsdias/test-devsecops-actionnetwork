@@ -26,11 +26,11 @@ Everything will run from a local machine with AWS CLI configured.
 
 4. **Launch script that generates self-signing certificate and uploads to AWS IAM**
 
-- cd security
-- chmod +x user-data-generate-certificate.sh
-- ./user-data-generate-certificate.sh  
+- cd security  
+- chmod +x user-data-generate-certificate.sh  
+- ./user-data-generate-certificate.sh    
 
-- Obs.: Insert the certificate infos, and in Common Name, just insert a dot (.).  
+Obs.: Insert the certificate infos, and in Common Name, just insert a dot (.).  
 Wait the script end to copy the Arn parameter as in the example below.  
   Example: "Arn": "arn:aws:iam::009009745233:server-certificate/CSC"  
 *Copy just the value: arn:aws:iam::009009745233:server-certificate/CSC*
