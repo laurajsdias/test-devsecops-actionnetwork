@@ -1,4 +1,4 @@
-<h1 align="center">
+<h1 align="left">
   📦 Documentation
   <p>Action Network Developer Operations and Security Engineer Take Home Assignment</p>
 </h1>
@@ -31,10 +31,10 @@ Wait the script end to copy the Arn parameter below.
 Copy just the value: arn:aws:iam::009009745233:server-certificate/CSC  
 
 4. **CertificateArn parameter**
-``Paste this Arn value into CertificateArn parameter in the project/web-servers-stack.yml file.``
+- Paste this Arn value from step 3 into CertificateArn parameter in the project/web-servers-stack.yml file.  
 
 5. **IAMInstanceProfile**
-``Copy the Account ID from your AWS account to IAMInstanceProfile in the project/web-servers-stack.yml file``
+- Copy the Account ID from your AWS account to IAMInstanceProfile in the project/web-servers-stack.yml file.  
 
 6. Ok, ready to launch.
 
