@@ -98,7 +98,7 @@ NOT DELIVERED:
 IDEAS TO MAKE MORE PRODUCTION-READY:
 - Improve the process so it has minimal manual steps. For example:  
  . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, I left the code commented under S3ReadOnlyRole resource, but I'm missing some detail and it's not working).   
- . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.  
+ . use Cloudformation with ElasticBeanStack to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.  
 - Use Certificate Manager and Route 53 to better manage the certificate being used in production and create a proper DNS for the website.    
 
  >>> **Address to the one I launched: https://loadbalancer-1076819742.us-east-1.elb.amazonaws.com/ (update the page to watch the load balancing of requests)**
