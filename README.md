@@ -5,12 +5,12 @@
 
 ### 🔽 Requirements (quick steps to prepare for launching)
 
-1. **Launch script to upload 3 files into s3**
-cd s3-files  
-chmod +x create-s3-bucket.sh  
-./create-s3-bucket.sh  
+1. **Launch script to upload 3 files into s3**  
+- cd s3-files    
+- chmod +x create-s3-bucket.sh      
+- ./create-s3-bucket.sh    
 
-2. **Create S3-Read-Only IAM role with this name: S3ReadOnlyAcessTestDevops** (MANUAL STEP INSIDE AWS CONSOLE)
+2. **Create S3-Read-Only IAM role with this name: S3ReadOnlyAcessTestDevops (MANUAL STEP INSIDE AWS CONSOLE)**  
 - Choose IAM service inside AWS CONSOLE  
 - Then, choose Roles (right side)  
 - Create Function  
@@ -23,12 +23,12 @@ chmod +x create-s3-bucket.sh
 
 3. **Launch script that generates self-signing certificate and uploads to AWS IAM**
 
-./security/user-data-generate-certificate.sh
+- ./security/user-data-generate-certificate.sh  
 
-Obs.: Insert the certificate infos, and in Common Name, just insert a dot (.).  
+- Obs.: Insert the certificate infos, and in Common Name, just insert a dot (.).  
 Wait the script end to copy the Arn parameter below.  
   Example: "Arn": "arn:aws:iam::009009745233:server-certificate/CSC"  
-Copy just the value: arn:aws:iam::009009745233:server-certificate/CSC  
+*Copy just the value: arn:aws:iam::009009745233:server-certificate/CSC*
 
 4. **CertificateArn parameter**
 - Paste this Arn value from step 3 into CertificateArn parameter in the project/web-servers-stack.yml file.  
