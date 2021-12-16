@@ -52,7 +52,7 @@ Resources:
         InstanceType: 't2.micro'  
         KeyName: 'testdevops-KP' 
         IamInstanceProfile: 
-          Arn: 'arn:aws:iam::009009745233:instance-profile/S3ReadOnlyAcessTestDevops'
+          Arn: 'arn:aws:iam::$ACCOUNT_ID:instance-profile/S3ReadOnlyAcessTestDevops'
         UserData:
           "Fn::Base64": !Sub |
             #!/bin/bash
@@ -187,7 +187,7 @@ Resources:
       Port: 443
       Protocol: "HTTPS"
       Certificates:
-        - CertificateArn: 'arn:aws:iam::009009745233:server-certificate/CSC'
+        - CertificateArn: 'arn:aws:iam::$ACCOUNT_ID:server-certificate/CSC'
 
 Outputs:      
   URL:
