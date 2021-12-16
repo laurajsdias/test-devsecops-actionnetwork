@@ -5,7 +5,8 @@
 
 ### 🔽 Requirements (quick steps to prepare for launching)
 
-1. **AWS CLI**
+1. **AWS CLI with credentials for some AWS account**
+Everything will run from a local machine with AWS CLI configured.
 
 2. **Launch script to upload 3 files into s3**  
 - cd s3-files    
@@ -87,6 +88,28 @@ DELIVERED:
 
 NOT DELIVERED:  
 - Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked.  
-- Method to automatically update or replace servers upon updates and test them to check if everything is ok before going in 'production'.   
+- Method to automatically update or replace servers upon updates and test them to check if everything is ok before going in 'production'. 
+
+IDEAS TO MAKE MORE PRODUCTION-READY:
+- Remove hardcoded stuff like AccountID, credentials and create secrets.
+- Improve the process so it has minimal manual steps. For example:
+ . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, but I'm missing some detail and it's not working). 
+ . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.
+
+ >>> Address to the one I launched: https://
+
+### 🔽 Refs
+
+Auto-scaling groups and Elastic Load Balancing AWS Basics for Beginners - Full Course - YouTube
+Scale policy amazon ec2 - How to add a scaling policy to an auto scaling group using Cloud Formation or AWS CLI - Stack Overflow
+yum-cron Scheduling updates in Linux using yum-cron | Enable Sysadmin (redhat.com)
+VPC and subnets creation Enterprise Level AWS Infrastructure – Architecture Scaffolding – Grape Up
+AWS - Creating VPC with CloudFormation - 2020 (bogotobogo.com)
+Cloudformation template for setting up VPC and subnets for Fargate (github.com)
+UserData to make configurations during launch amazon web services - Configure ECS Cluster Instance Configuration using YAML file - Stack Overflow
+Cloudformation examp
+le Cloud Infrastructure as Code – AWS Cloud Formation – Grape Up
+Http to https redirect amazon web services - HTTP to HTTPS redirect in CloudFormation template for ECS Fargate - Stack Overflow
+Generate self-signing certificate Create AWS ELB with Self-Signed SSL Cert | by Francis Yeo | Medium
 
 
