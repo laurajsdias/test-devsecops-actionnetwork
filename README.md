@@ -36,7 +36,7 @@ Wait the script end to copy the Arn parameter below.
 5. **IAMInstanceProfile**
 - Copy the Account ID from your AWS account to IAMInstanceProfile in the project/web-servers-stack.yml file.  
 
-6. Ok, ready to launch.
+6. **Ok, ready to launch**
 
 ## Launching the VPC-STACK
 
@@ -44,7 +44,7 @@ Wait the script end to copy the Arn parameter below.
 2. ``./launch-vpc-stack.sh``
 3. ``wait for it to end``
 
-### Launching the WEB-SERVERS-STACK
+## Launching the WEB-SERVERS-STACK
 
 1. ``./launch-web-servers.sh``
 2. ``wait for it to end``
