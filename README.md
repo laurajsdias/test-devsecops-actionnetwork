@@ -89,7 +89,7 @@ DELIVERED:
 - Encrypted access to the website via the load balancer (using self-signed certificate as an example)  
 - A UserData script encoded on the LaunchTemplate that installs yum-cron and uses a customized yum-cron.conf file (uploaded to S3) that schedules security and package updates every 24h.  
 - Scripts to create bucket, upload necessary files to S3, generate certificate and do the lauching of the Cloudformation stacks.  
-- Security measures such as: using .gitignore to avoid uploading .env, our KeyPair, the generated certificate and its private key to the repository, and using variable $ACCOUNT_ID to avoid credential exposure.
+- Security measures such as: using .gitignore to avoid uploading our KeyPair, the generated certificate and its private key to the repository, and using variable $ACCOUNT_ID to avoid credential exposure.
 
 NOT DELIVERED:  
 - Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked (the command used on the servers was "stress -c 8").    
