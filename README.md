@@ -101,7 +101,7 @@ IDEAS TO MAKE MORE PRODUCTION-READY:
  . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.  
 - Use Certificate Manager and Route 53 to better manage the certificate being used in production and create a proper DNS for the website.    
 
- >>> **Address to the one I launched: https://loadbalancer-1076819742.us-east-1.elb.amazonaws.com/**
+ >>> **Address to the one I launched: https://loadbalancer-1076819742.us-east-1.elb.amazonaws.com/ (update the page to watch the load balancing of requests)**
 
 ### 🔽 Refs
 
