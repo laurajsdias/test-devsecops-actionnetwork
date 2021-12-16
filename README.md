@@ -61,7 +61,7 @@ The first thing I noticed is that I would have to automate the creation of VPC a
 
 In order to create the VPC, I went for a pretty straightforward approach. It is basically one main VPC, 4 subnets and all the resources needed in order for it to work (like internet gateway, routing tables, choosing of availability zones). This VPC is created in the 10.0.0.0/16 network range and it is by default created on us-east-1 region (N. Virginia).    
 
-Cloudformation was the main tool in this project. So I've created a yaml file (vpc-stack.yml) with all the parameter needed to launch this background infrastructure. And, to launch this stack without using the AWS console, all you have to do is to launch a simple script.   
+Cloudformation was the main tool in this project. So I've created a yaml file (vpc-stack.yml) with all the parameters needed to launch this background infrastructure. And, to launch this stack without using the AWS console, all you have to do is to launch a simple script.   
 
 Using Cloudformation as well, I've created the yaml (web-server-stack.yml) for provisioning the web servers asked on the assignment.
 
@@ -72,14 +72,14 @@ This was an important step, because of the UserData script going on. This userda
 - to install yum-cron in all instances. Goal: schedule daily security and packages updates in all servers. 
 - enable a web server (apache) and place the necessary website files inside /var/www/html directory.  
 
-Next steps was to define an **AutoScalingGroup** and a **SecurityGroup**. The AutoScalingGroup defines that this infra will have 3 servers by default, 2 servers at minimum and 5 total and that the subnets created on the vpc-stack will be assigned to this group of instances. The SecurityGroup basically is defining that this infra will accept inbound connections from everyone on ports 22(ssh), 80(http) e 443(https).    
+Next steps were to define an **AutoScalingGroup** and a **SecurityGroup**. The AutoScalingGroup defines that this infra will have 3 servers by default, 2 servers at minimum and 5 total and that the subnets created on the vpc-stack will be assigned to this group of instances. The SecurityGroup basically is defining that this infra will accept inbound connections from everyone on ports 22(ssh), 80(http) e 443(https).    
 
 The final part is all the resources needed for a load balancing to happen inside AWS. So it was created the **LoadBalancer** itself associated with our SecurityGroup and the created subnets. Then we enable a **TargetGroup** to listen for connections on port 80 and make healthy checks.  
 
 Furthermore, there are the **Listeners** configuration. There are two: one for HTTP, other for HTTPS. Basically the HTTPListener forward all requests to port 443, and then the HTTPSListener does its job using a self signed certificate that is generated on step 4 of the Requirements step above.
 
 DELIVERED:
-- Code to provision almost automatically 3 web servers on AWS, and auto scaling group working behind a load balancer.  
+- Code to provision almost automatically 3 web servers on AWS via an auto scaling group working behind a load balancer.  
 - A basic HTML page file uploaded to S3 that also gives names to the instances to test the load balancer working.  
 - Encrypted access to the website via the load balancer (using self-signed certificate)  
 - A UserData script encoded on the LaunchTemplate that installs yum-cron and uses a customized yum-cron.conf file (uploaded to S3) that schedules security and package updates every 24h.  
