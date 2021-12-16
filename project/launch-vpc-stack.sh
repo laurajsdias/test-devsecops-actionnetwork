@@ -1,0 +1,1 @@
+aws cloudformation create-stack --template-body=file://./vpc-stack.yml --stack-name=vpc-infra

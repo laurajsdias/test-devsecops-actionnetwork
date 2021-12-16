@@ -1,0 +1,176 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy a VPC and its subnets
+
+Parameters:
+  Region:
+    Type: String
+    Default: 'us-east-1'
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: myVPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: myVPC Internet Gateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: 'true'
+      AvailabilityZone: !Sub '${Region}a'
+      Tags:
+        - Key: Name
+          Value: Subnet 1
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: 'true' 
+      AvailabilityZone: !Sub '${Region}b'
+      Tags:
+        - Key: Name
+          Value: Subnet 2
+
+  Subnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.3.0/24
+      MapPublicIpOnLaunch: 'true' 
+      AvailabilityZone: !Sub '${Region}c'
+      Tags:
+        - Key: Name
+          Value: Subnet 3
+
+  Subnet4:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.4.0/24
+      MapPublicIpOnLaunch: 'true' 
+      AvailabilityZone: !Sub '${Region}d'
+      Tags:
+        - Key: Name
+          Value: Subnet 4
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Public Route Table
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet1
+      RouteTableId: !Ref PublicRouteTable
+  
+  PublicSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet2
+      RouteTableId: !Ref PublicRouteTable
+  
+  PublicSubnetRouteTableAssociation3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet3
+      RouteTableId: !Ref PublicRouteTable
+  
+  PublicSubnetRouteTableAssociation4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet4
+      RouteTableId: !Ref PublicRouteTable
+
+Outputs:
+  VpcId:
+    Value: !Ref VPC
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-VPC"
+  AZ1:
+    Description: Availability Zone 1
+    Value: !GetAtt 
+      - Subnet1
+      - AvailabilityZone
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-AZ1"
+  AZ2:
+    Description: Availability Zone 2
+    Value: !GetAtt 
+      - Subnet2
+      - AvailabilityZone
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-AZ2"
+  AZ3:
+    Description: Availability Zone 3
+    Value: !GetAtt 
+      - Subnet3
+      - AvailabilityZone
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-AZ3"
+  AZ4:
+    Description: Availability Zone 4
+    Value: !GetAtt 
+      - Subnet4
+      - AvailabilityZone
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-AZ4"  
+  Subnet1:
+    Value:
+      Ref: Subnet1
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-Subnet1"
+  Subnet2:
+    Value:
+      Ref: Subnet2
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-Subnet2"
+  Subnet3:
+    Value:
+      Ref: Subnet3
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-Subnet3"
+  Subnet4:
+    Value:
+      Ref: Subnet4
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-Subnet4"

@@ -1,0 +1,29 @@
+<html>
+<head>
+<style>
+body {
+  background-color: #016797;
+}
+h1 { color: white; }
+h1 {
+ text-align:center
+}
+h2 { color: white; }
+h2 {
+ text-align:center
+}
+</style>
+</head>
+<body>
+
+<h1>Hello, World =)</h1>
+  <h2><span id='date-time'></span>.</h2>
+<h2>Load Balancing Test: INSTANCEID</h2>
+
+<script>
+  var dt = new Date();
+  document.getElementById('date-time').innerHTML=dt;
+</script>
+
+</body>
+</html>

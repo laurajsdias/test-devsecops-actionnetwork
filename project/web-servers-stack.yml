@@ -1,0 +1,201 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Web Servers Stack"
+
+Parameters:
+  InfrastructureStackName:
+    Description: Name of the base infrastructure stack
+    Type: String
+    Default: vpc-infra
+  Region:
+    Type: String
+    Default: 'us-east-1'
+
+Resources:
+  # S3ReadOnlyRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - ec2.amazonaws.com
+  #           Action:
+  #             - 'sts:AssumeRole'
+  #     Description: Role to provide access to S3
+  #     Policies:
+  #       - PolicyName: EmbeddedInlinePolicy
+  #         PolicyDocument:
+  #           Version: "2012-10-17"
+  #           Statement:
+  #             - Effect: Allow
+  #               Action: 'cloudformation:*'
+  #               Resource: '*'
+  #             - Effect: Allow
+  #               Action: 's3:*'
+  #               Resource: '*'
+  #     ManagedPolicyArns: 
+  #       - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+  #     RoleName: S3ReadOnlyAcessTestDevops
+
+  StackLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: StackLaunchTemplate
+      LaunchTemplateData:
+        BlockDeviceMappings:
+          - DeviceName: '/dev/xvda'
+            Ebs:
+              VolumeSize: 8 
+        ImageId: 'ami-0ed9277fb7eb570c9'
+        InstanceType: 't2.micro'  
+        KeyName: 'testdevops-KP' 
+        IamInstanceProfile: 
+          Arn: 'arn:aws:iam::009009745233:instance-profile/S3ReadOnlyAcessTestDevops'
+        UserData:
+          "Fn::Base64": !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install yum-cron -y
+            systemctl enable yum-cron.service
+            cd /etc/yum
+            aws s3 cp s3://test-user-data-devsecops/yum-cron-custom.conf ./
+            yes | cp -rf yum-cron-custom.conf yum-cron.conf
+            systemctl start yum-cron.service  
+            yum install httpd -y
+            systemctl start httpd
+            systemctl enable httpd
+            cd /var/www/html
+            aws s3 cp s3://test-user-data-devsecops/names.csv ./
+            aws s3 cp s3://test-user-data-devsecops/index.txt ./
+            EC2NAME=`cat ./names.csv|sort -R|head -n 1|xargs`
+            sed "s/INSTANCEID/$EC2NAME/" index.txt > index.html
+        SecurityGroupIds:
+          - !Ref WebAccessSecurityGroup
+  
+  WebAccessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'WebAccess security group'
+      GroupName: 'WebAccessSecurityGroup'
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: TCP
+          FromPort: 22
+          ToPort: 22
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: TCP
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: TCP
+          FromPort: 443
+          ToPort: 443
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0' 
+          IpProtocol: -1 
+      VpcId:
+        Fn::ImportValue:
+          Fn::Sub: "${InfrastructureStackName}-VPC" 
+      Tags:
+        - Key: 'Name'
+          Value: 'WebAccessSecurityGroup'
+
+  WebServerAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: WebServerAutoScalingGroup
+      DesiredCapacity: 3
+      HealthCheckGracePeriod: 5
+      HealthCheckType: ELB
+      LaunchTemplate:
+        LaunchTemplateId: !Ref StackLaunchTemplate
+        Version: 1
+      MaxSize: 5
+      MinSize: 2
+      TargetGroupARNs:
+        - !Ref ALBTargetGroup
+      VPCZoneIdentifier: 
+        - Fn::ImportValue:
+            Fn::Sub: "${InfrastructureStackName}-Subnet1"
+        - Fn::ImportValue:
+            Fn::Sub: "${InfrastructureStackName}-Subnet2"
+        - Fn::ImportValue:
+            Fn::Sub: "${InfrastructureStackName}-Subnet3"
+        - Fn::ImportValue:
+            Fn::Sub: "${InfrastructureStackName}-Subnet4"  
+
+# ========= Application Load Balancer configuration =========
+
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      Port: 80
+      Protocol: HTTP
+      Name: ALBTargetGroup
+      TargetType: instance
+      VpcId:
+        Fn::ImportValue:
+          Fn::Sub: "${InfrastructureStackName}-VPC"
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: LoadBalancer
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref WebAccessSecurityGroup
+      Type: application
+      Subnets: 
+        - Fn::ImportValue:
+              Fn::Sub: "${InfrastructureStackName}-Subnet1"
+        - Fn::ImportValue:
+              Fn::Sub: "${InfrastructureStackName}-Subnet2"
+        - Fn::ImportValue:
+              Fn::Sub: "${InfrastructureStackName}-Subnet3"
+        - Fn::ImportValue:
+              Fn::Sub: "${InfrastructureStackName}-Subnet4"
+
+  ALBListenerHTTP:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: "redirect"
+          RedirectConfig:
+            Protocol: "HTTPS"
+            Port: 443
+            Host: "#{host}"
+            Path: "/#{path}"
+            Query: "#{query}"
+            StatusCode: "HTTP_301"
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: "HTTP"
+  
+  ALBListenerHTTPS:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref ALBTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: "HTTPS"
+      Certificates:
+        - CertificateArn: 'arn:aws:iam::009009745233:server-certificate/CSC'
+
+Outputs:      
+  URL:
+    Description: URL of the website
+    Value:
+      Fn::Join:
+      - ''
+      - - https://
+        - Fn::GetAtt:
+          - LoadBalancer
+          - DNSName
