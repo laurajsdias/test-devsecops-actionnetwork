@@ -85,7 +85,7 @@ Furthermore, there are the **Listeners** configuration. There are two: one for H
 
 DELIVERED:
 - Code to provision almost automatically 3 web servers on AWS via an auto scaling group working behind a load balancer.  
-- A basic HTML page file uploaded to S3 that also gives names to the instances to test the load balancer working.  
+- A basic HTML page with Hello World, date/time, and that also gives names to the instances to test the load balancer working.  
 - Encrypted access to the website via the load balancer (using self-signed certificate as an example)  
 - A UserData script encoded on the LaunchTemplate that installs yum-cron and uses a customized yum-cron.conf file (uploaded to S3) that schedules security and package updates every 24h.  
 - Scripts to create bucket, upload necessary files to S3, generate certificate and do the lauching of the Cloudformation stacks.  
