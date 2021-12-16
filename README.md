@@ -8,7 +8,7 @@
 1. **AWS CLI with credentials for some AWS account**
 Everything will run from a local machine with AWS CLI configured.
 
-2. **Launch script to upload 3 files into s3**  
+2. **Launch script to create bucket and upload 3 files into s3**  
 - cd s3-files    
 - chmod +x create-s3-bucket.sh      
 - ./create-s3-bucket.sh    
