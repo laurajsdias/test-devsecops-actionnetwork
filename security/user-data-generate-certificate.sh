@@ -4,3 +4,6 @@ openssl x509 -in certificate.crt -text -noout
 openssl rsa -in privateKey.key -text > private.pem
 openssl x509 -inform PEM -in certificate.crt > public.pem
 aws iam upload-server-certificate --server-certificate-name CSC --certificate-body file://./public.pem --private-key file://./private.pem
+
+## If there is a problem and you need to generate the certificate again, delete the old one with the following command:
+# aws iam delete-server-certificate --server-certificate-name CSC

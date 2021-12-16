@@ -1,5 +1,5 @@
-testdevops-KP.pem
+project/testdevops-KP.pem
 security/certificate.crt 
 security/private.pem
 security/privateKey.key 
-public.pem 
+security/public.pem 

@@ -26,18 +26,20 @@ Everything will run from a local machine with AWS CLI configured.
 
 4. **Launch script that generates self-signing certificate and uploads to AWS IAM**
 
-- ./security/user-data-generate-certificate.sh  
+- cd security
+- chmod +x user-data-generate-certificate.sh
+- ./user-data-generate-certificate.sh  
 
 - Obs.: Insert the certificate infos, and in Common Name, just insert a dot (.).  
-Wait the script end to copy the Arn parameter below.  
+Wait the script end to copy the Arn parameter as in the example below.  
   Example: "Arn": "arn:aws:iam::009009745233:server-certificate/CSC"  
 *Copy just the value: arn:aws:iam::009009745233:server-certificate/CSC*
 
 5. **CertificateArn parameter**
-- Paste this Arn value from step 3 into CertificateArn parameter in the project/web-servers-stack.yml file.  
+- Paste this Arn value from step 4 into CertificateArn parameter in the project/web-servers-stack.yml file.  
 
-6. **IAMInstanceProfile**
-- Copy the Account ID from your AWS account to IAMInstanceProfile in the project/web-servers-stack.yml file.  
+6. **ACCOUNT_ID**
+- Replace the $ACCOUNT_ID variable (there are two in the web-servers-stack.yml file) for your AWS account ID.
 
 7. **Ok, ready to launch!**
 
@@ -52,6 +54,8 @@ Wait the script end to copy the Arn parameter below.
 1. ``./launch-web-servers.sh``
 2. ``wait for it to end (status of the launching process can be seen on Cloudformation service)``
 3. ``test by accessing the LoadBalancer on EC2 service. There will be a DNS address``
+
+>>> Importante note: the KeyPair to access the EC2 instances will be generated in this step. It will be the file testdevops-KP.pem inside project directory.
 
 ### 🔽 Explanations   
 
@@ -85,18 +89,19 @@ DELIVERED:
 - Encrypted access to the website via the load balancer (using self-signed certificate as an example)  
 - A UserData script encoded on the LaunchTemplate that installs yum-cron and uses a customized yum-cron.conf file (uploaded to S3) that schedules security and package updates every 24h.  
 - Scripts to create bucket, upload necessary files to S3, generate certificate and do the lauching of the Cloudformation stacks.  
+- Security measures such as: using .gitignore to avoid uploading .env, our KeyPair, the generated certificate and its private key to the repository, and using variable $ACCOUNT_ID to avoid credential exposure.
 
 NOT DELIVERED:  
-- Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked (the command used on the servers was "stress -c 8").  
-- Method to automatically update or replace servers upon updates and test them to check if everything is ok before going in 'production'. 
+- Automatic scale and descale based on simulated load. But I've tested it manually installing the stress package (install-stress-util-ec2.sh) in all servers and putting manually a threshold for CPU usage and it worked (the command used on the servers was "stress -c 8").    
+- Method to automatically update or replace servers upon updates and test them to check if everything is ok before going in 'production'.   
 
 IDEAS TO MAKE MORE PRODUCTION-READY:
-- Remove hardcoded stuff like AccountID, credentials and create secrets.
 - Improve the process so it has minimal manual steps. For example:  
- . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, but I'm missing some detail and it's not working).   
+ . create the S3-Read-Only IAM Role through the web-servers-stack (i've tried, I left the code commented under S3ReadOnlyRole resource, but I'm missing some detail and it's not working).   
  . use Cloudformation to provision the infra and code automatically in an ElasticBeanStack environment, and remove the step of uploading the files to S3.  
+- Use Certificate Manager and Route 53 to better manage the certificate being used in production and create a proper DNS for the website.    
 
- >>> **Address to the one I launched: https://**
+ >>> **Address to the one I launched: https://https://loadbalancer-1076819742.us-east-1.elb.amazonaws.com/**
 
 ### 🔽 Refs
 
